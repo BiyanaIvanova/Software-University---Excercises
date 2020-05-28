@@ -1,0 +1,83 @@
+import java.util.*;
+
+import static java.lang.System.in;
+
+public class legendaryFarming {
+    public static void main(String[] args) {
+        Scanner mitko = new Scanner(in);
+
+        int marks = 0;
+        String item = "";
+        String winner = " ";
+
+        Map<String, Integer> legendary = new TreeMap<>();
+        Map<String, Integer> junk = new TreeMap<>();
+
+        legendary.put("shards", 0);
+        legendary.put("fragments", 0);
+        legendary.put("motes", 0);
+        String[] input = mitko.nextLine().split("\\s+");
+
+        while (winner.equals(" ")) {
+
+            for (int i = 0; i < input.length; i += 2) {
+                marks = Integer.parseInt(input[i]);
+                item = input[i + 1].toLowerCase();
+
+                if (item.equals("shards") || item.equals("fragments") || item.equals("motes")) {
+                    legendary.put(item, (legendary.get(item) + marks));
+                } else {
+                    if (junk.containsKey(item)) {
+                        junk.put(item, junk.get(item) + marks);
+                    } else {
+                        junk.putIfAbsent(item, marks);
+                    }
+                }
+
+                if ((item.equals("shards") || item.equals("fragments") || item.equals("motes")) && legendary.get(item) >= 250) {
+                   winner = FindWinner(legendary, item, marks, winner);
+
+                   System.out.printf("%s obtained!%n", winner);
+
+                   legendary
+                           .entrySet()
+                           .stream()
+                           .sorted((i1, i2) -> Integer.compare(i2.getValue(), i1.getValue()))
+                           .forEach(l -> System.out.printf("%s: %d%n", l.getKey(), l.getValue()));
+
+                   junk
+                           .entrySet()
+                           .forEach(j -> System.out.printf("%s: %d%n", j.getKey(), j.getValue()));
+
+                   break;
+                }
+            }
+            if(!winner.equals(" ")){
+                break;
+            }
+            input = mitko.nextLine().split("\\s+");
+        }
+    }
+
+    private static String FindWinner(Map<String, Integer> legendary, String item, int marks, String winner) {
+        switch (item) {
+            case "shards":
+                winner = "Shadowmourne";
+                legendary.put(item, legendary.get(item) - 250);
+                break;
+            case "fragments":
+                winner = "Valanyr";
+                legendary.put(item, legendary.get(item) - 250);
+                break;
+            case "motes":
+                winner = "Dragonwrath";
+                legendary.put(item, legendary.get(item) - 250);
+                break;
+        }
+        return winner;
+    }
+}
+
+
+
+
